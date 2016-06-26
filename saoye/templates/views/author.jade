@@ -10,6 +10,8 @@ mixin post(post, isS3Enabled)
 					img(src=post.image.url).img-responsive
 				else
 					img(src="/author/images/" + post.image.filename).img-responsive
+			!= post.authorName		
+			!= post.introduction.brief
 
 
 
