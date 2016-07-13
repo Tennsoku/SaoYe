@@ -13,6 +13,7 @@ var Post = new keystone.List('Post', {
 });
 
 // Use extra functions in commons/types-utils.js
+var titleImageObj = TypesUtils.createFileTypeObj('post/images/');
 var postImageObj = TypesUtils.createFileTypeObj('post/images/');
 
 Post.add({
@@ -20,14 +21,17 @@ Post.add({
     state: { type: Types.Select, options: 'draft, published, archived', default: 'draft', index: true },
     uploader: { type: Types.Relationship, ref: 'User', index: true },
     publishedDate: { type: Types.Date, index: true, dependsOn: { state: 'published' } },
-    image: postImageObj, 
-	isPromoted: { type: Types.Boolean }, //Article will be posted on index if true
+	titleImage: titleImageObj,
+    postImage: postImageObj, 
+	contentImage: { type: Types.LocalFiles, dest: process.cwd() + '/files/post/images/'},
+	
     content: {
         brief: { type: Types.Html, wysiwyg: true, height: 150 },
         extended: { type: Types.Html, wysiwyg: true, height: 400 }
     },
     categories: { type: Types.Relationship, ref: 'PostCategory', many: true },
-	authors: { type: Types.Relationship, ref: 'Author', many: true }
+	authors: { type: Types.Relationship, ref: 'Author', many: true },
+	isPromoted: { type: Types.Boolean } //Article will be posted on homepage if true
 });
 
 Post.schema.virtual('content.full').get(function() {

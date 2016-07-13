@@ -14,12 +14,13 @@ html
 
 		//- Customise the stylesheet for your site by editing /public/styles/site.less
 		//- All .less files will be automatically compiled and minified in production.
-		link(href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css", rel="stylesheet")
+		link(href="styles/bootstrap/bootstrap.min.css", rel="stylesheet")
 
 		//- This file provides the default styling for the KeystoneJS Content Editor
 		if user && user.canAccessKeystone
-			link(href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css", rel="stylesheet")
+			link(href="styles/bootstrap/bootstrap.min.css", rel="stylesheet")
 
+		link(href="/styles/site.min.css", rel="stylesheet")
 		//- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries
 		//- Safely remove this block if you are not targeting IE8
 		//-[if lt IE 9]
@@ -29,7 +30,7 @@ html
 
 		//- Include template-specific stylesheets by extending the css block
 		block css
-
+			
 		//- Add any other template-specific HEAD tags by extending the head block
 		block head
 
@@ -37,31 +38,45 @@ html
 	body
 
 		//- HEADER
-		#header: .container
+		#header
 
 			//- Customise your site's navigation by changing the navLinks Array in ./routes/middleware.js
 			//- ... or completely change this header to suit your design.
 
-			div(role="navigation").navbar.navbar-default
-				.container-fluid
-					.navbar-header
-						button.navbar-toggle(type='button', data-toggle='collapse', data-target='.navbar-collapse')
-							span.sr-only Toggle navigation
-							span.icon-bar
-							span.icon-bar
-							span.icon-bar
-						a.navbar-brand(href='/') Saoye
-					.collapse.navbar-collapse
-						ul.nav.navbar-nav.navbar-left
-							each link in navLinks
-								li(class=(section == link.key ? 'active' : null)): a(href=link.href)= link.label
-						ul.nav.navbar-nav.navbar-right
-							if user
-								if user.canAccessKeystone
-									li: a(href='/keystone') Open Keystone
-								li: a(href='/keystone/signout') Sign Out
-							else
-								li: a(href='/keystone/signin') Sign In
+			div(role="navigation").navbar-default.navbar-fixed-top
+				
+				// Full screen modal for every page
+				.navbar-header
+					button(type="button", class="btn btn-info navbar-toggle collapsed", data-toggle="modal", data-target="#menuModal") S
+				// Animation for the modal
+				.modal.fade.fullscreen(id="menuModal", tabindex="-1", role="dialog", aria-labelledby="myModalLabel", aria-hidden="true")
+					.modal-dialog
+						.modal-content(style="color:#fff;")
+							
+							.modal-header(style="border:0;")
+								button(type="button", class="close btn btn-link", data-dismiss="modal", aria-hidden="true") X
+									i(class="fa fa-close fa-lg", style="color:#999;")
+								h4.model-title.text-center
+									span.sr-only main navigation
+							
+							
+							.modal-body
+								#saoye-intro.text-right
+									h1(style="color:#000;") 骚也
+								
+								#menu-list
+									.text-right
+										// Get options from navLinks from middleware.js
+										ul.nav.navbar-nav
+											each link in navLinks
+												li(class=(section == link.key ? 'active' : null)): a(href=link.href)= link.label
+										
+										ul.nav.navbar-nav
+											if user
+												if user.canAccessKeystone
+													li: a(href='/keystone') 进入后台
+											else
+												li: a(href='/keystone/signin') 登陆
 
 		//- BODY
 		#body
@@ -82,10 +97,9 @@ html
 
 
 		//- FOOTER
-		.container: #footer
-
-			//- You don't _have_ to include a link saying your site is powered by KeystoneJS, but we appreciate it!
-			p Powered by <a href="http://keystonejs.com" target="_blank">KeystoneJS</a>.
+		//.container: #footer
+		//	//- You don't _have_ to include a link saying your site is powered by KeystoneJS, but we appreciate it!
+		//	p Powered by <a href="http://keystonejs.com" target="_blank">KeystoneJS</a>.
 
 
 		//- JAVASCRIPT

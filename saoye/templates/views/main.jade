@@ -1,44 +1,39 @@
 extends ../layouts/default
 
 mixin post(post)
-	.post(data-ks-editable=editable(user, { list: 'Post', id: post.id }))
-		if post.image.exists
-			a(href='/blog/post/' + post.slug)
-				img(src="/post/images/" + post.image.filename).img-responsive
+	.post
+		a(href='/blog/post/' + post.slug)
+			if post.postImage.exists & post.titleImage.exists
+				img(class="post-background", style="background-image:url(/post/images/" + post.postImage.filename + ")")
+				.post-info
+					img(class="post-title-img", src="/post/images/" + post.titleImage.filename)
+			else
+				.post-info
+					h1(class="post-title")
+						!=post.title
+					h5(class="post-brief") 
+						!=post.content.brief
 
-
-
-block intro
-	.container
-		h1= data.category ? data.category.name : 'Main'
 
 block content
-	.container: .row
-		.col-sm-8.col-md-9
-			if filters.category && !data.category
-				h3.text-muted Invalid Category.
-			else
-				if data.posts.results.length
-					.blog
-						each post in data.posts.results
-							+post(post)
-					
-					if data.posts.totalPages > 1
-						ul.pagination
-							if data.posts.previous
-								li: a(href='?page=' + data.posts.previous): span.glyphicon.glyphicon-chevron-left
-							else
-								li.disabled: a(href='?page=' + 1): span.glyphicon.glyphicon-chevron-left
-							each p, i in data.posts.pages
-								li(class=data.posts.currentPage == p ? 'active' : null)
-									a(href='?page=' + (p == '...' ? (i ? data.posts.totalPages : 1) : p ))= p
-							if data.posts.next
-								li: a(href='?page=' + data.posts.next): span.glyphicon.glyphicon-chevron-right
-							else
-								li.disabled: a(href='?page=' + data.posts.totalPages): span.entypo.glyphicon.glyphicon-chevron-right
-				else
-					if data.category
-						h3.text-muted There are no posts in the category #{data.category.name}.
-					else
-						h3.text-muted There are no posts yet.
+		if data.posts.results.length
+			#home-slider.carousel.slide
+				.carousel-inner
+					- var i = 0
+					each post in data.posts.results
+						- i++
+						if i == 1
+							.item.active
+								+post(post)
+
+						else
+							.item
+								+post(post)
+			.pull-center
+				a.carousel-control.left(href="#home-slider" data-slide="prev")
+				a.carousel-control.right(href="#home-slider" data-slide="next")
+
+		else
+			h3.text-muted There are no posts yet.
 		
+script $('.carousel').carousel();
